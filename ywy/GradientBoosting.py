@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 28 19:52:59 2017
 
-@author: Administrator
-"""
 from sklearn.linear_model import LogisticRegression
 import numpy as np
 from collections import defaultdict
@@ -41,17 +36,17 @@ def load_data(path,training=True,testing=False):
         labels=list(labels.values)
     converter_dict={'weekday':str,'hour':str,'region':str,'city':str,'adexchange':str,'slotwidth':str,'slotheight':str,'slotvisibility':str,'slotformat':str,'advertiser':str}
     datas = pd.read_csv(path, skipinitialspace=True,usecols=features,converters=converter_dict)
-    print('预处理开始\n')
+    print('Start prepocessing\n')
     datas['slotprice']=datas['slotprice']/std_of_slotprice
-    print('price标准化完成\n')
+    print('price standardization\n')
     df = pd.read_csv(path, skipinitialspace=True,usecols=other_features)
-    print('深层预处理开始\n')
+    print('Start deep prepocessing\n')
     for i in list(range(0,len(df['usertag']))):
         instance=dict()
         instance.update(dict(datas.iloc[i]))
         op_sys, browser =df.iloc[i]['useragent'].split('_')
         instance.update({op_sys: True, browser: True})
-        #后期需要修改
+
         usertags=df.iloc[i]['usertag'].split(',')
         temp_dict = {}
         for tag in usertags:
@@ -61,7 +56,7 @@ def load_data(path,training=True,testing=False):
         if testing==False:
             processed_labels.append(int(labels[i]))
         if i%10000==0:
-            print('已经预处理了'+str(i)+'份数据了\n')
+            print('Have processed '+str(i)+' data \n')
     del datas
     if testing==True:
         df = pd.read_csv(path, skipinitialspace=True,usecols=['bidid'])
@@ -129,7 +124,7 @@ def model_evaluator(model,processed_staff,start_budget,random_iter=5):
         sample_PCTR=[PCTR[x] for x in y]
         for i in list(range(0,len(data))):
             pCTR = sample_PCTR[i]
-            #你的定价模型写在这里！！！
+             
             current_bid = base_bid * pCTR / avgCTR
             # Check if we still have budget:
             if budget > current_bid:
